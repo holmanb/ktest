@@ -1,0 +1,21 @@
+#!/bin/bash
+
+require-lib bcachefs-test-libs.sh
+
+config-scratch-devs 4G
+config-scratch-devs 4G
+
+config-timeout "$(stress_timeout)"
+
+test_fsck()
+{
+    run_quiet "" bcachefs format -f /dev/sdb
+    bcachefs fsck /dev/sdb
+
+    mount -t bcachefs /dev/sdb /mnt
+    sleep 4
+    umount /mnt
+    bcachefs fsck /dev/sdb
+
+}
+
